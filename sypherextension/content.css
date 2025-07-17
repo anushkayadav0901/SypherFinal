@@ -1,0 +1,225 @@
+/* Sidebar styles */
+#osint-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background: #ffffff;
+  border-left: 1px solid #e5e7eb;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.osint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.osint-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+#osint-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.osint-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.osint-section h4 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+/* Risk display styles */
+#risk-display {
+  padding: 10px;
+  border-radius: 5px;
+  background: #f8fafc;
+}
+
+.risk-score {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.risk-level {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.risk-level.HIGH {
+  color: #dc2626;
+}
+
+.risk-level.MEDIUM {
+  color: #ca8a04;
+}
+
+.risk-level.LOW {
+  color: #16a34a;
+}
+
+/* Entities list styles */
+#entities-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.entity-group {
+  margin-bottom: 15px;
+}
+
+.entity-group h5 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+}
+
+.entity-group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entity-group li {
+  padding: 5px;
+  margin-bottom: 3px;
+  background: #f8fafc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.entity-group li:hover {
+  background: #e5e7eb;
+}
+
+/* OSINT tools styles */
+.osint-tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.osint-tools button {
+  padding: 8px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.osint-tools button:hover {
+  background: #1d4ed8;
+}
+
+/* AI assistant styles */
+#ai-question {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+#ask-ai {
+  padding: 8px 15px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#ask-ai:hover {
+  background: #059669;
+}
+
+#ai-response {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 5px;
+  min-height: 50px;
+}
+
+/* Loading and error states */
+.loading {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.error {
+  color: #dc2626;
+}
+
+/* Entity highlights */
+.osint-highlight {
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin: 0 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.osint-person {
+  background: #fef3c7;
+  border-bottom: 2px solid #f59e0b;
+}
+
+.osint-email {
+  background: #dbeafe;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.osint-url {
+  background: #f3e8ff;
+  border-bottom: 2px solid #8b5cf6;
+}
+
+.osint-phone {
+  background: #d1fae5;
+  border-bottom: 2px solid #10b981;
+}
+
+.osint-organization {
+  background: #fce7f3;
+  border-bottom: 2px solid #ec4899;
+}
+
+.osint-ip_address {
+  background: #fee2e2;
+  border-bottom: 2px solid #ef4444;
+}
+
+.osint-bitcoin {
+  background: #ffedd5;
+  border-bottom: 2px solid #f97316;
+}
+
+.osint-date {
+  background: #f0f9ff;
+  border-bottom: 2px solid #0ea5e9;
+}
+
+.osint-highlight:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
