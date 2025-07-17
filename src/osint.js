@@ -684,7 +684,7 @@ const SypherLanding = () => {
         </div>
       </section>
 
-      {/* Footer Section */}
+      {/* Footer*/}
       <footer className="py-10 bg-black/50">
         <div className="max-w-7xl mx-auto text-center text-gray-400">
           <p>&copy; 2025 Sypher. All rights reserved.</p>
