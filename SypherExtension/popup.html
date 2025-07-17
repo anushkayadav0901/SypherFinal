@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYPHER - AI OSINT Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #ffffff;
+            width: 400px;
+            height: 600px;
+            overflow-y: auto;
+        }
+
+        .container {
+            padding: 16px;
+            height: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .network-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 8px 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .online {
+            color: #00ff88;
+        }
+
+        .offline {
+            color: #ff4444;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #00ff88;
+        }
+
+        .danger-score {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .score-low { color: #00ff88; }
+        .score-medium { color: #ffaa00; }
+        .score-high { color: #ff4444; }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #ffaa00, #ff4444);
+            transition: width 0.3s ease;
+        }
+
+        .alerts {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+
+        .alert-low {
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: #00ff88;
+        }
+
+        .alert-medium {
+            background: rgba(255, 170, 0, 0.1);
+            border-left-color: #ffaa00;
+        }
+
+        .alert-high {
+            background: rgba(255, 68, 68, 0.1);
+            border-left-color: #ff4444;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .alert-description {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .threat-text {
+            color: #ff4444;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #333;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #888;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #00ff88;
+            border-bottom-color: #00ff88;
+        }
+
+        .tab:hover {
+            color: #00ff88;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #00cc66, #00aa55);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .quick-actions .btn {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        .loading {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .risk-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .risk-low { background: #00ff88; }
+        .risk-medium { background: #ffaa00; }
+        .risk-high { background: #ff4444; }
+
+        .dork-results,
+        .evidence-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 12px;
+        }
+
+        .result-item {
+            padding: 8px;
+            margin-bottom: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            border-left: 3px solid #00ff88;
+        }
+
+        .result-title {
+            font-weight: 600;
+            font-size: 12px;
+            color: #00ff88;
+            margin-bottom: 2px;
+        }
+
+        .result-description {
+            font-size: 11px;
+            color: #ccc;
+        }
+
+        .privacy-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .privacy-overlay {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .privacy-overlay h3 {
+            margin-bottom: 12px;
+            color: #00ff88;
+        }
+
+        .privacy-overlay p {
+            margin-bottom: 16px;
+            color: #ccc;
+        }
+
+        #sentiment-results {
+            margin-top: 12px;
+        }
+
+        .sentiment-result {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .sentiment-high {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+        }
+
+        .sentiment-medium {
+            background: rgba(255, 170, 0, 0.2);
+            border: 1px solid #ffaa00;
+        }
+
+        .sentiment-low {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">SYPHER</div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>AI Monitor Active</span>
+            </div>
+        </div>
+
+        <div class="network-status">
+            <span id="network-indicator" class="online">●</span>
+            <span id="network-text">Online - IPFS Sync Ready</span>
+        </div>
+
+        <div class="panel">
+            <h2>🛡️ Threat Analysis</h2>
+            <div class="danger-score">
+                <div class="score-value score-low" id="danger-score">23</div>
+                <div>Danger Score</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="danger-progress" style="width: 23%"></div>
+                </div>
+            </div>
+
+            <div class="alerts" id="alerts-container">
+                <div class="alert alert-medium">
+                    <div class="alert-title">⚠️ Suspicious Domain Detected</div>
+                    <div class="alert-description">Domain <span class="threat-text">paypal-secure-login.tk</span> flagged as potential phishing</div>
+                </div>
+                <div class="alert alert-low">
+                    <div class="alert-title">✅ Content Verified</div>
+                    <div class="alert-description">No manipulation detected in current media</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🔍 Sypher Tools</h2>
+            <div class="tabs">
+                <div class="tab active" data-tab="dork">Dork</div>
+                <div class="tab" data-tab="sentiment">Sentiment</div>
+                <div class="tab" data-tab="evidence">Evidence</div>
+            </div>
+
+            <div id="dork" class="tab-content active">
+                <div class="input-group">
+                    <label>Search Query</label>
+                    <input type="text" id="dork-query" placeholder="site:pastebin.com password leak" />
+                </div>
+                <div class="input-group">
+                    <label>Dork Type</label>
+                    <select id="dork-type">
+                        <option value="credential">Credential Leaks</option>
+                        <option value="directory">Directory Listing</option>
+                        <option value="file">File Exposure</option>
+                        <option value="vulnerability">Vulnerabilities</option>
+                        <option value="social">Social Media</option>
+                        <option value="phishing">Phishing Sites</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="perform-dork">
+                    <span id="dork-loading" class="loading hidden"></span>
+                    Search OSINT
+                </button>
+                <div class="dork-results" id="dork-results"></div>
+            </div>
+
+            <div id="sentiment" class="tab-content">
+                <div class="input-group">
+                    <label>Text to Analyze</label>
+                    <input type="text" id="sentiment-text" placeholder="Enter suspicious text for AI analysis..." />
+                </div>
+                <button class="btn btn-primary" id="analyze-sentiment">
+                    <span id="sentiment-loading" class="loading hidden"></span>
+                    Analyze Threat Level
+                </button>
+                <div id="sentiment-results"></div>
+            </div>
+
+            <div id="evidence" class="tab-content">
+                <div class="input-group">
+                    <label>Evidence Type</label>
+                    <select id="evidence-type">
+                        <option value="screenshot">Screenshot</option>
+                        <option value="url">Suspicious URL</option>
+                        <option value="text">Text Evidence</option>
+                        <option value="file">File Evidence</option>
+                        <option value="social">Social Media</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <input type="text" id="evidence-description" placeholder="Brief description of evidence..." />
+                </div>
+                <button class="btn btn-primary" id="collect-evidence">Collect Evidence</button>
+                <div class="evidence-list" id="evidence-list"></div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="btn btn-secondary" id="scan-page">
+                <span class="risk-indicator risk-medium"></span>
+                Scan Current Page
+            </button>
+            <button class="btn btn-secondary" id="export-evidence">
+                📊 Export Report
+            </button>
+            <button class="btn btn-secondary" id="sync-ipfs">
+                🌐 Sync IPFS
+            </button>
+            <button class="btn btn-secondary" id="privacy-mode">
+                🔒 Privacy Mode
+            </button>
+        </div>
+    </div>
+
+    <div id="privacy-overlay" class="privacy-mode hidden">
+        <div class="privacy-overlay">
+            <h3>🔒 Privacy Mode Activated</h3>
+            <p>All data is being redacted and anonymized</p>
+            <button class="btn btn-primary" id="disable-privacy">Disable Privacy Mode</button>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

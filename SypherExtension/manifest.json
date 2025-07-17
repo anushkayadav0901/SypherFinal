@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "SYPHER - AI OSINT Assistant",
+  "version": "1.0.0",
+  "description": "AI-powered OSINT tool for threat analysis and security monitoring",
+  "permissions": [
+  "activeTab",
+  "storage",
+  "alarms",
+  "notifications",
+  "webRequest",
+  "contextMenus",
+  "webNavigation"
+],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "SYPHER - AI OSINT Assistant"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
