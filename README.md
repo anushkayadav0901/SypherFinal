@@ -1,4 +1,5 @@
 # SYPHER – Your Screen’s Smartest Watchdog
+ai model- https://colab.research.google.com/drive/1k-Kb_GcAanqhHWiB7jsGoHQ6kqw482jN?usp=sharing
 
 > In today’s digital world, every click could be a threat. SYPHER is an AI-powered, browser-based OSINT assistant that detects scams, phishing, fake content, and manipulated media — before you even click.
 
